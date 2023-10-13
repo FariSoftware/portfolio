@@ -25,7 +25,6 @@ import name.abuchen.portfolio.model.BuySellEntry;
 import name.abuchen.portfolio.model.Transaction;
 import name.abuchen.portfolio.model.Transaction.Unit;
 import name.abuchen.portfolio.model.Transaction.Unit.TaxType;
-import name.abuchen.portfolio.model.Transaction.Unit.Type;
 import name.abuchen.portfolio.money.Money;
 import name.abuchen.portfolio.money.Values;
 
