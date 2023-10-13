@@ -30,6 +30,11 @@ public abstract class Transaction implements Annotated, Adaptable
         {
             GROSS_VALUE, TAX, FEE
         }
+        
+        public enum TaxType
+        {
+            WITHHOLDING_TAX, CAPITAL_GAIN_TAX, SOLIDARITY_TAX, CHURCH_TAX, FINANCIAL_TRANSACTION_TAX,  UNKOWN
+        }
 
         /**
          * Type of transaction unit
@@ -52,15 +57,27 @@ public abstract class Transaction implements Annotated, Adaptable
          */
         private final BigDecimal exchangeRate;
 
+        /** 
+        * Type of tax
+        */
+        private TaxType taxType;
+
         public Unit(Type type, Money amount)
         {
             this.type = Objects.requireNonNull(type);
             this.amount = Objects.requireNonNull(amount);
             this.forex = null;
             this.exchangeRate = null;
+            this.taxType = null;
 
             if (type == Type.GROSS_VALUE)
                 throw new IllegalArgumentException("Gross value without forex: " + Values.Money.format(amount)); //$NON-NLS-1$
+        }
+        
+        public Unit(Type type, Money amount, TaxType taxType)
+        {
+            this(type, amount);
+            this.taxType = taxType;
         }
 
         public Unit(Type type, Money amount, Money forex, BigDecimal exchangeRate)
@@ -74,6 +91,7 @@ public abstract class Transaction implements Annotated, Adaptable
             this.amount = Objects.requireNonNull(amount);
             this.forex = Objects.requireNonNull(forex);
             this.exchangeRate = Objects.requireNonNull(exchangeRate);
+            this.taxType = null;
 
             if (doValidityCheck)
             {
@@ -163,6 +181,11 @@ public abstract class Transaction implements Annotated, Adaptable
                             (forex != null ? forex.toString() : "<no forex>"), //$NON-NLS-1$
                             (exchangeRate != null ? exchangeRate.toString() : "<no exchange>") //$NON-NLS-1$
             );
+        }
+
+        public TaxType getTaxType()
+        {
+            return taxType;
         }
     }
 
@@ -437,7 +460,16 @@ public abstract class Transaction implements Annotated, Adaptable
         return getUnits().filter(u -> u.getType() == type) //
                         .collect(MoneyCollectors.sum(getCurrencyCode(), Unit::getAmount));
     }
-
+    
+    /**
+     * Returns the sum of units in transaction currency
+     */
+    public Money getUnitSum(Unit.TaxType taxType)
+    {
+        return getUnits().filter(u -> u.getType() == Unit.Type.TAX && u.getTaxType() == taxType) //
+                        .collect(MoneyCollectors.sum(getCurrencyCode(), Unit::getAmount));
+    }
+    
     /**
      * Returns the sum of units in transaction currency
      */

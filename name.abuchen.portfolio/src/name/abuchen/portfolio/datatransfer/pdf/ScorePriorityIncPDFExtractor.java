@@ -16,6 +16,7 @@ import name.abuchen.portfolio.model.AccountTransaction;
 import name.abuchen.portfolio.model.BuySellEntry;
 import name.abuchen.portfolio.model.Client;
 import name.abuchen.portfolio.model.PortfolioTransaction;
+import name.abuchen.portfolio.model.Transaction.Unit;
 import name.abuchen.portfolio.money.CurrencyUnit;
 import name.abuchen.portfolio.money.Money;
 import name.abuchen.portfolio.money.Values;
@@ -146,7 +147,7 @@ public class ScorePriorityIncPDFExtractor extends AbstractPDFExtractor
 
                                                             Money tax = Money.of(asCurrencyCode(CurrencyUnit.USD), asAmount(v.get("tax")));
 
-                                                            checkAndSetTax(tax, t, type.getCurrentContext());
+                                                            checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.WITHHOLDING_TAX);
                                                         }),
                                         section -> section //
                                                         .attributes("month", "day", "name", "shares", "wkn", "amount") //

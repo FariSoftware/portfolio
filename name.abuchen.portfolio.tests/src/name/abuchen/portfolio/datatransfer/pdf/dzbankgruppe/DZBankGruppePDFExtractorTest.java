@@ -685,6 +685,12 @@ public class DZBankGruppePDFExtractorTest
                         is(Money.of(CurrencyUnit.EUR, Values.Amount.factorize(18.87))));
         assertThat(transaction.getUnitSum(Unit.Type.TAX),
                         is(Money.of(CurrencyUnit.EUR, Values.Amount.factorize(3.59 + 1.89 + 0.11))));
+        assertThat(transaction.getUnitSum(Unit.TaxType.WITHHOLDING_TAX),
+                        is(Money.of(CurrencyUnit.EUR, Values.Amount.factorize(3.59))));
+        assertThat(transaction.getUnitSum(Unit.TaxType.CAPITAL_GAIN_TAX),
+                        is(Money.of(CurrencyUnit.EUR, Values.Amount.factorize(1.89))));
+        assertThat(transaction.getUnitSum(Unit.TaxType.SOLIDARITY_TAX),
+                        is(Money.of(CurrencyUnit.EUR, Values.Amount.factorize(0.11))));        
         assertThat(transaction.getUnitSum(Unit.Type.FEE),
                         is(Money.of(CurrencyUnit.EUR, Values.Amount.factorize(0.00))));
 

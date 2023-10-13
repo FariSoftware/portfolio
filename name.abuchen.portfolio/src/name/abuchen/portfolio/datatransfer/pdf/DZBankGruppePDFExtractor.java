@@ -6,6 +6,7 @@ import static name.abuchen.portfolio.util.TextUtil.stripBlanks;
 import static name.abuchen.portfolio.util.TextUtil.trim;
 
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import name.abuchen.portfolio.model.AccountTransaction;
 import name.abuchen.portfolio.model.BuySellEntry;
 import name.abuchen.portfolio.model.Client;
 import name.abuchen.portfolio.model.PortfolioTransaction;
+import name.abuchen.portfolio.model.Transaction.Unit;
 import name.abuchen.portfolio.money.CurrencyUnit;
 import name.abuchen.portfolio.money.Money;
 import name.abuchen.portfolio.money.Values;
@@ -858,7 +860,7 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 // Finanztransaktionssteuer 10,10- EUR
                 .section("tax", "currency").optional()
                 .match("^Finanztransaktionssteuer (?<tax>[\\.,\\d]+)\\- (?<currency>[\\w]{3})$")
-                .assign((t, v) -> processTaxEntries(t, v, type))
+                .assign((t, v) -> processTaxEntries(t, v, type, Unit.TaxType.FINANCIAL_TRANSACTION_TAX))
 
                 // Kapitalertragsteuer (Account)
                 // Kapitalertragsteuer 25 % auf 7,55 EUR 1,89- EUR
@@ -867,7 +869,7 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 .match("^Kapitalertragsteuer [\\.,\\d]+([\\s]+)?% .* (?<tax>[\\.,\\d]+)\\- (?<currency>[\\w]{3})$")
                 .assign((t, v) -> {
                     if (!type.getCurrentContext().getBoolean(IS_JOINT_ACCOUNT))
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.CAPITAL_GAIN_TAX);
                 })
 
                 // Kapitalerstragsteuer (Joint Account)
@@ -882,12 +884,12 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                         // Account 1
                         v.put("currency", v.get("currency1"));
                         v.put("tax", v.get("tax1"));
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.CAPITAL_GAIN_TAX);
 
                         // Account 2
                         v.put("currency", v.get("currency2"));
                         v.put("tax", v.get("tax2"));
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.CAPITAL_GAIN_TAX);
                     }
                 })
 
@@ -898,7 +900,7 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 .match("^Solidarit.tszuschlag [\\.,\\d]+([\\s]+)?% .* (?<tax>[\\.,\\d]+)\\- (?<currency>[\\w]{3})$")
                 .assign((t, v) -> {
                     if (!type.getCurrentContext().getBoolean(IS_JOINT_ACCOUNT))
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.SOLIDARITY_TAX);
                 })
 
                 // Solitaritätszuschlag (Joint Account)
@@ -913,12 +915,12 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                         // Account 1
                         v.put("currency", v.get("currency1"));
                         v.put("tax", v.get("tax1"));
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.SOLIDARITY_TAX);
 
                         // Account 2
                         v.put("currency", v.get("currency2"));
                         v.put("tax", v.get("tax2"));
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.SOLIDARITY_TAX);
                     }
                 })
 
@@ -928,7 +930,7 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 .match("^Kirchensteuer [\\.,\\d]+([\\s]+)?% .* (?<tax>[\\d.]+,\\d+)\\- (?<currency>[\\w]{3})$")
                 .assign((t, v) -> {
                     if (!type.getCurrentContext().getBoolean(IS_JOINT_ACCOUNT))
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.CHURCH_TAX);
                 })
 
                 // Kirchensteuer (Joint Account)
@@ -943,12 +945,12 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                         // Account 1
                         v.put("currency", v.get("currency1"));
                         v.put("tax", v.get("tax1"));
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.CHURCH_TAX);
 
                         // Account 2
                         v.put("currency", v.get("currency2"));
                         v.put("tax", v.get("tax2"));
-                        processTaxEntries(t, v, type);
+                        processTaxEntries(t, v, type, Unit.TaxType.CHURCH_TAX);
                     }
                 })
 
@@ -969,7 +971,7 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                     Map<String, String> context = type.getCurrentContext();
 
                     v.put("currency", asCurrencyCode(context.get("baseCurrency")));
-                    processTaxEntries(t, v, type);
+                    processTaxEntries(t, v, type, Unit.TaxType.CAPITAL_GAIN_TAX);
                 })
 
                 // abgeführte Kirchensteuer 0,00
@@ -979,7 +981,7 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                     Map<String, String> context = type.getCurrentContext();
 
                     v.put("currency", asCurrencyCode(context.get("baseCurrency")));
-                    processTaxEntries(t, v, type);
+                    processTaxEntries(t, v, type, Unit.TaxType.CHURCH_TAX);
                 });
     }
 

@@ -24,6 +24,8 @@ import name.abuchen.portfolio.model.AccountTransaction;
 import name.abuchen.portfolio.model.BuySellEntry;
 import name.abuchen.portfolio.model.Transaction;
 import name.abuchen.portfolio.model.Transaction.Unit;
+import name.abuchen.portfolio.model.Transaction.Unit.TaxType;
+import name.abuchen.portfolio.model.Transaction.Unit.Type;
 import name.abuchen.portfolio.money.Money;
 import name.abuchen.portfolio.money.Values;
 
@@ -116,21 +118,21 @@ public class ExtractorUtils
             t.addUnit(new Unit(Unit.Type.GROSS_VALUE, gross, fxGross, rate.get().getRate(gross.getCurrencyCode())));
     }
 
-    public static void checkAndSetTax(Money tax, Object transaction, DocumentContext context)
+    public static void checkAndSetTax(Money tax, Object transaction, DocumentContext context, TaxType taxType)
     {
         if (transaction instanceof name.abuchen.portfolio.model.Transaction tx)
-            ExtractorUtils.checkAndSetTax(tax, tx, context);
+            ExtractorUtils.checkAndSetTax(tax, tx, context, taxType);
         else if (transaction instanceof BuySellEntry buySell)
-            ExtractorUtils.checkAndSetTax(tax, buySell.getPortfolioTransaction(), context);
+            ExtractorUtils.checkAndSetTax(tax, buySell.getPortfolioTransaction(), context, taxType);
         else
             throw new UnsupportedOperationException();
     }
 
-    public static void checkAndSetTax(Money tax, name.abuchen.portfolio.model.Transaction t, DocumentContext context)
+    public static void checkAndSetTax(Money tax, name.abuchen.portfolio.model.Transaction t, DocumentContext context, TaxType taxType)
     {
         if (tax.getCurrencyCode().equals(t.getCurrencyCode()))
         {
-            t.addUnit(new Unit(Unit.Type.TAX, tax));
+            t.addUnit(new Unit(Unit.Type.TAX, tax, taxType));
             return;
         }
 

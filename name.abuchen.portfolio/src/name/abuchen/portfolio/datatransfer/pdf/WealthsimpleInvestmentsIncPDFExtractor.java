@@ -25,6 +25,7 @@ import name.abuchen.portfolio.model.AccountTransaction;
 import name.abuchen.portfolio.model.BuySellEntry;
 import name.abuchen.portfolio.model.Client;
 import name.abuchen.portfolio.model.PortfolioTransaction;
+import name.abuchen.portfolio.model.Transaction.Unit;
 import name.abuchen.portfolio.money.Money;
 import name.abuchen.portfolio.money.Values;
 
@@ -275,7 +276,7 @@ public class WealthsimpleInvestmentsIncPDFExtractor extends AbstractPDFExtractor
                                             if (dividendTaxTransaction.isPresent() && v.get("tickerSymbol").equalsIgnoreCase(t.getSecurity().getTickerSymbol()))
                                             {
                                                 Money tax = Money.of(asCurrencyCode(dividendTaxTransaction.get().currency), dividendTaxTransaction.get().tax);
-                                                checkAndSetTax(tax, t, type.getCurrentContext());
+                                                checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.CAPITAL_GAIN_TAX);
                                             }
 
                                             ExtrExchangeRate rate = asExchangeRate(v);
@@ -324,7 +325,7 @@ public class WealthsimpleInvestmentsIncPDFExtractor extends AbstractPDFExtractor
                                             if (dividendTaxTransaction.isPresent() && v.get("tickerSymbol").equalsIgnoreCase(t.getSecurity().getTickerSymbol()))
                                             {
                                                 Money tax = Money.of(asCurrencyCode(dividendTaxTransaction.get().currency), dividendTaxTransaction.get().tax);
-                                                checkAndSetTax(tax, t, type.getCurrentContext());
+                                                checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.CAPITAL_GAIN_TAX);
                                             }
 
                                             Money gross = Money.of(asCurrencyCode(v.get("currency")), t.getGrossValueAmount());
@@ -371,7 +372,7 @@ public class WealthsimpleInvestmentsIncPDFExtractor extends AbstractPDFExtractor
                                             if (dividendTaxTransaction.isPresent() && v.get("tickerSymbol").equalsIgnoreCase(t.getSecurity().getTickerSymbol()))
                                             {
                                                 Money tax = Money.of(asCurrencyCode(dividendTaxTransaction.get().currency), dividendTaxTransaction.get().tax);
-                                                checkAndSetTax(tax, t, type.getCurrentContext());
+                                                checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.CAPITAL_GAIN_TAX);
                                             }
 
                                             Money gross = Money.of(asCurrencyCode(v.get("currency")), t.getGrossValueAmount());
@@ -407,7 +408,7 @@ public class WealthsimpleInvestmentsIncPDFExtractor extends AbstractPDFExtractor
                                             if (dividendTaxTransaction.isPresent() && v.get("tickerSymbol").equalsIgnoreCase(t.getSecurity().getTickerSymbol()))
                                             {
                                                 Money tax = Money.of(asCurrencyCode(dividendTaxTransaction.get().currency), dividendTaxTransaction.get().tax);
-                                                checkAndSetTax(tax, t, type.getCurrentContext());
+                                                checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.CAPITAL_GAIN_TAX);
                                             }
                                         })
                         )

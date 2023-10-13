@@ -33,6 +33,8 @@ import name.abuchen.portfolio.model.CrossEntry;
 import name.abuchen.portfolio.model.Security;
 import name.abuchen.portfolio.model.SecurityProperty;
 import name.abuchen.portfolio.model.Transaction;
+import name.abuchen.portfolio.model.Transaction.Unit;
+import name.abuchen.portfolio.model.Transaction.Unit.TaxType;
 import name.abuchen.portfolio.money.CurrencyUnit;
 import name.abuchen.portfolio.money.Money;
 import name.abuchen.portfolio.money.Values;
@@ -354,8 +356,14 @@ public abstract class AbstractPDFExtractor implements Extractor
     protected void processTaxEntries(Object t, Map<String, String> v, DocumentType type)
     {
         Money tax = Money.of(asCurrencyCode(v.get("currency")), asAmount(v.get("tax"))); //$NON-NLS-1$ //$NON-NLS-2$
-        ExtractorUtils.checkAndSetTax(tax, t, type.getCurrentContext());
+        ExtractorUtils.checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.UNKOWN); // ToDo
     }
+    
+    protected void processTaxEntries(Object t, Map<String, String> v, DocumentType type, Unit.TaxType taxType)
+    {
+        Money tax = Money.of(asCurrencyCode(v.get("currency")), asAmount(v.get("tax"))); //$NON-NLS-1$ //$NON-NLS-2$
+        ExtractorUtils.checkAndSetTax(tax, t, type.getCurrentContext(), taxType);
+    }    
 
     protected void processFeeEntries(Object t, Map<String, String> v, DocumentType type)
     {
@@ -386,14 +394,14 @@ public abstract class AbstractPDFExtractor implements Extractor
                     throw new IllegalArgumentException(
                                     "processing of withholding taxes must be done before creditable withholding taxes"); //$NON-NLS-1$
 
-                ExtractorUtils.checkAndSetTax(tax, t, type.getCurrentContext());
+                ExtractorUtils.checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.WITHHOLDING_TAX);
                 data.getTransactionContext().putBoolean(taxType, true);
                 return;
 
             case "creditableWithHoldingTax": //$NON-NLS-1$
                 if (!data.getTransactionContext().getBoolean("withHoldingTax")) //$NON-NLS-1$
                 {
-                    ExtractorUtils.checkAndSetTax(tax, t, type.getCurrentContext());
+                    ExtractorUtils.checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.WITHHOLDING_TAX);
                     data.getTransactionContext().putBoolean(taxType, true);
                 }
                 return;

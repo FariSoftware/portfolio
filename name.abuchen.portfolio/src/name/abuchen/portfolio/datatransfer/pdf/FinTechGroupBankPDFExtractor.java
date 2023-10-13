@@ -19,6 +19,7 @@ import name.abuchen.portfolio.model.AccountTransaction;
 import name.abuchen.portfolio.model.BuySellEntry;
 import name.abuchen.portfolio.model.Client;
 import name.abuchen.portfolio.model.PortfolioTransaction;
+import name.abuchen.portfolio.model.Transaction.Unit;
 import name.abuchen.portfolio.model.Transaction.Unit.Type;
 import name.abuchen.portfolio.money.Money;
 import name.abuchen.portfolio.money.Values;
@@ -3142,7 +3143,7 @@ public class FinTechGroupBankPDFExtractor extends AbstractPDFExtractor
                                                 .setScale(0, RoundingMode.HALF_UP).longValue());
                         }
 
-                        checkAndSetTax(tax, t, type.getCurrentContext());
+                        checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.CAPITAL_GAIN_TAX);
                     }
                 })
 
@@ -3168,7 +3169,7 @@ public class FinTechGroupBankPDFExtractor extends AbstractPDFExtractor
                                                 .setScale(0, RoundingMode.HALF_UP).longValue());
                         }
 
-                        checkAndSetTax(tax, t, type.getCurrentContext());
+                        checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.CAPITAL_GAIN_TAX);
                     }
                 })
 
@@ -3193,7 +3194,7 @@ public class FinTechGroupBankPDFExtractor extends AbstractPDFExtractor
                                                 .setScale(0, RoundingMode.HALF_UP).longValue());
                         }
 
-                        checkAndSetTax(tax, t, type.getCurrentContext());
+                        checkAndSetTax(tax, t, type.getCurrentContext(), Unit.TaxType.CAPITAL_GAIN_TAX);
                     }
                 })
 
