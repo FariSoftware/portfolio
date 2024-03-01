@@ -33,7 +33,7 @@ public abstract class Transaction implements Annotated, Adaptable
         
         public enum TaxType
         {
-            WITHHOLDING_TAX, CAPITAL_GAIN_TAX, SOLIDARITY_TAX, CHURCH_TAX, FINANCIAL_TRANSACTION_TAX,  UNKOWN
+            WITHHOLDING_TAX, CAPITAL_GAIN_TAX, SOLIDARITY_TAX, CHURCH_TAX, FINANCIAL_TRANSACTION_TAX, UNKOWN
         }
 
         /**
@@ -175,8 +175,9 @@ public abstract class Transaction implements Annotated, Adaptable
         @Override
         public String toString()
         {
-            return String.format("%-17s %s %s %s", //$NON-NLS-1$
+            return String.format("%-17s %s%s %s %s", //$NON-NLS-1$
                             type.name(), //
+                            taxType != null ? taxType.name() : "", //$NON-NLS-1$
                             amount.toString(), //
                             (forex != null ? forex.toString() : "<no forex>"), //$NON-NLS-1$
                             (exchangeRate != null ? exchangeRate.toString() : "<no exchange>") //$NON-NLS-1$

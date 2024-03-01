@@ -353,6 +353,11 @@ public interface Extractor
         {
             return entry.getAccountTransaction().getSource();
         }
+        
+        public boolean isLoss()
+        {
+            return entry.getIsLoss();
+        }
 
         @Override
         public Status apply(ImportAction action, Context context)

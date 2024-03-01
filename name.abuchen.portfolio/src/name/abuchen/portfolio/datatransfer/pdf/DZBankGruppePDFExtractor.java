@@ -129,6 +129,14 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 .section("date", "time")
                 .match("^Schlusstag\\/\\-Zeit (?<date>[\\d]{2}\\.[\\d]{2}\\.[\\d]{4}) (?<time>[\\d]{2}:[\\d]{2}:[\\d]{2}) .*$")
                 .assign((t, v) -> t.setDate(asDate(v.get("date"), v.get("time"))))
+                
+                // Ermittlung steuerrelevanter Ertr.ge
+                .section("isloss")
+                .match("^Ver.u.erungs(?<isloss>(gewinn)|(verlust)).*$")
+                .assign((t, v) -> {
+                    var lossType = v.get("isloss");
+                    t.setIsLoss(lossType.equals("verlust"));  
+                })
 
                 // Ausmachender Betrag 5.109,01- EUR
                 // Ausmachender Betrag 1.109,01+ EUR
