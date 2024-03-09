@@ -131,11 +131,11 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 .assign((t, v) -> t.setDate(asDate(v.get("date"), v.get("time"))))
                 
                 // Ermittlung steuerrelevanter Ertr.ge
-                .section("isloss").optional()
-                .match("^Ver.u.erungs(?<isloss>(gewinn)|(verlust)).*$")
+                .section("sellWithLoss").optional()
+                .match("^Ver.u.erungs(?<sellWithLoss>(gewinn)|(verlust)).*$")
                 .assign((t, v) -> {
-                    var lossType = v.get("isloss");
-                    t.setIsLoss(lossType.equals("verlust"));  
+                    var lossType = v.get("sellWithLoss");
+                    t.setSellWithLoss(lossType.equals("verlust"));  
                 })
 
                 // Ausmachender Betrag 5.109,01- EUR

@@ -11,7 +11,7 @@ public class BuySellEntry implements CrossEntry, Annotated
     private PortfolioTransaction portfolioTransaction;
     private Account account;
     private AccountTransaction accountTransaction;
-    private boolean isLoss;
+    private boolean sellWithLoss;
 
     public BuySellEntry()
     {
@@ -96,9 +96,9 @@ public class BuySellEntry implements CrossEntry, Annotated
         this.accountTransaction.setMonetaryAmount(amount);
     }
     
-    public void setIsLoss(boolean isLoss)
+    public void setSellWithLoss(boolean isLoss)
     {
-        this.isLoss = isLoss;
+        this.sellWithLoss = isLoss;
     }
 
     @Override
@@ -212,6 +212,6 @@ public class BuySellEntry implements CrossEntry, Annotated
 
     public boolean getIsLoss()
     {
-        return this.isLoss;
+        return this.sellWithLoss;
     }
 }
