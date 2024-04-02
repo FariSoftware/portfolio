@@ -223,6 +223,7 @@ public abstract class Transaction implements Annotated, Adaptable
 
     private String uuid;
     private LocalDateTime date;
+    private LocalDateTime voucherDate;
     private String currencyCode;
     private long amount;
 
@@ -283,6 +284,16 @@ public abstract class Transaction implements Annotated, Adaptable
     {
         this.date = date;
         this.updatedAt = Instant.now();
+    }
+    
+    public LocalDateTime getVoucherDateTime()
+    {
+        return voucherDate;
+    }
+    
+    public void setVoucherDateTime(LocalDateTime date)
+    {
+        this.voucherDate = date;
     }
 
     public String getCurrencyCode()

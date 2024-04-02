@@ -226,7 +226,11 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 .section("note").optional()
                 .match("^.* Art der Dividende (?<note>.*)$")
                 .assign((t, v) -> t.setNote(trim(v.get("note"))))
-
+                
+                .section("voucherDate")
+                .match("^.* Datum (?<voucherDate>[\\\\d]{2}\\\\.[\\\\d]{2}\\\\.[\\\\d]{4}) .*$")
+                .assign((t, v) -> t.setVoucherDateTime(asDate(v.get("voucherDate"))))
+                
                 .wrap(TransactionItem::new);
 
         addTaxesSectionsTransaction(pdfTransaction, type);
