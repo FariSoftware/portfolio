@@ -634,6 +634,8 @@ public class DZBankGruppePDFExtractorTest
         assertThat(transaction.getShares(), is(Values.Share.factorize(17)));
         assertThat(transaction.getSource(), is("Dividende01.txt"));
         assertNull(transaction.getNote());
+        
+        assertThat(transaction.getVoucherDateTime(), is(LocalDateTime.parse("2021-06-09T00:00")));
 
         assertThat(transaction.getMonetaryAmount(),
                         is(Money.of(CurrencyUnit.EUR, Values.Amount.factorize(13.28))));
