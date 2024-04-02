@@ -46,7 +46,8 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
             }
             
             var pVoucherDateMatcher = pVoucherDate.matcher(line);
-            if(pVoucherDateMatcher.matches()) {
+            if(pVoucherDateMatcher.matches())
+            {
                 var voucherDate = pVoucherDateMatcher.group("voucherDate");
                 context.put("voucherDate", voucherDate);
             }
