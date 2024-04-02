@@ -35,12 +35,20 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
     BiConsumer<DocumentContext, String[]> jointAccount = (context, lines) -> {
         Pattern pJointAccount = Pattern.compile("Anteilige Berechnungsgrundlage .* \\([\\d]{2},[\\d]{2} %\\).*");
 
+        Pattern pVoucherDate = Pattern.compile("^.*Datum (?<voucherDate>[\\d]{2}\\.[\\d]{2}\\.[\\d]{4}).*$");
+        
         for (String line : lines)
         {
             if (pJointAccount.matcher(line).matches())
             {
                 context.putBoolean(IS_JOINT_ACCOUNT, true);
                 break;
+            }
+            
+            var pVoucherDateMatcher = pVoucherDate.matcher(line);
+            if(pVoucherDateMatcher.matches()) {
+                var voucherDate = pVoucherDateMatcher.group("voucherDate");
+                context.put("voucherDate", voucherDate);
             }
         }
     };
@@ -128,7 +136,10 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 // Schlusstag/-Zeit 17.02.2021 09:04:10 Auftraggeber Max Mustermann
                 .section("date", "time")
                 .match("^Schlusstag\\/\\-Zeit (?<date>[\\d]{2}\\.[\\d]{2}\\.[\\d]{4}) (?<time>[\\d]{2}:[\\d]{2}:[\\d]{2}) .*$")
-                .assign((t, v) -> t.setDate(asDate(v.get("date"), v.get("time"))))
+                .assign((t, v) -> {
+                    t.setDate(asDate(v.get("date"), v.get("time")));
+                    t.setVoucherDateTime(asDate(type.getCurrentContext().get("voucherDate")));
+                    })
                 
                 // Ermittlung steuerrelevanter Ertr.ge
                 .section("sellWithLoss").optional()
@@ -197,7 +208,10 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 // Den Betrag buchen wir mit Wertstellung 10.06.2021 zu Gunsten des Kontos XXXX (IBAN DE88 4306 0967 1154
                 .section("date")
                 .match("^Den Betrag buchen wir mit Wertstellung (?<date>[\\d]{2}\\.[\\d]{2}\\.[\\d]{4}) .*$")
-                .assign((t, v) -> t.setDateTime(asDate(v.get("date"))))
+                .assign((t, v) -> {
+                    t.setDateTime(asDate(v.get("date")));
+                    t.setVoucherDateTime(asDate(type.getCurrentContext().get("voucherDate")));
+                })
 
                 // Ausmachender Betrag 13,28+ EUR
                 .section("amount", "currency")
@@ -226,10 +240,6 @@ public class DZBankGruppePDFExtractor extends AbstractPDFExtractor
                 .section("note").optional()
                 .match("^.* Art der Dividende (?<note>.*)$")
                 .assign((t, v) -> t.setNote(trim(v.get("note"))))
-                
-                .section("voucherDate")
-                .match("^.* Datum (?<voucherDate>[\\\\d]{2}\\\\.[\\\\d]{2}\\\\.[\\\\d]{4}) .*$")
-                .assign((t, v) -> t.setVoucherDateTime(asDate(v.get("voucherDate"))))
                 
                 .wrap(TransactionItem::new);
 

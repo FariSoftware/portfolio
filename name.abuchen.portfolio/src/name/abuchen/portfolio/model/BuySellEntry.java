@@ -60,6 +60,12 @@ public class BuySellEntry implements CrossEntry, Annotated
         this.portfolioTransaction.setDateTime(date);
         this.accountTransaction.setDateTime(date);
     }
+    
+    public void setVoucherDateTime(LocalDateTime date)
+    {
+        this.portfolioTransaction.setVoucherDateTime(date);
+        this.accountTransaction.setVoucherDateTime(date);
+    }
 
     public void setType(Type type)
     {
