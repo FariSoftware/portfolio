@@ -204,7 +204,8 @@ public class IBFlexStatementExtractor implements Extractor
                         transaction.setSecurity(this.getOrCreateSecurity(element, true));
 
                     // Positive amount are a tax refund
-                    if (Math.signum(Double.parseDouble(element.getAttribute("amount"))) == -1) {
+                    if (Math.signum(Double.parseDouble(element.getAttribute("amount"))) == -1)
+                    {
                         transaction.setType(AccountTransaction.Type.TAXES);
                         transaction.setCurrencyCode(amount.getCurrencyCode());
                         transaction.addUnit(new Unit(Unit.Type.TAX, amount , Unit.TaxType.WITHHOLDING_TAX));
@@ -444,7 +445,8 @@ public class IBFlexStatementExtractor implements Extractor
                 }
             }
             
-            if(element.hasAttribute("capitalGainsPnl")) {
+            if(element.hasAttribute("capitalGainsPnl"))
+            {
                 Money amount = Money.of(asCurrencyCode(element.getAttribute("currency")),
                                 asAmount(element.getAttribute("netCash")));
                 transaction.setSellWithLoss(amount.getAmount() < 0);
